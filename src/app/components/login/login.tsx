@@ -1,3 +1,4 @@
+import { showAlert } from "@/redux/alertSlice";
 import { setAuth } from "@/redux/authSlice";
 import { User } from "@/types/global";
 import { gql, useMutation } from "@apollo/client";
@@ -58,9 +59,12 @@ export default function Login({ openRegistration, onSuccess }: LoginProps) {
                 user: response.data.login.user as User
             }))
 
+            dispatch(showAlert({ message: 'Welcome!', type: 'success', duration: 3000 }));
+
             onSuccess();
 
         } catch (e) {
+            dispatch(showAlert({ message: 'Invalid credentials!', type: 'error', duration: 5000 }));
             console.error(e);
         }
     }

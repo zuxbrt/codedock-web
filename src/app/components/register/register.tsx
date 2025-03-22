@@ -1,3 +1,4 @@
+import { showAlert } from "@/redux/alertSlice";
 import { setAuth } from "@/redux/authSlice";
 import { User } from "@/types/global";
 import { gql, useMutation } from "@apollo/client";
@@ -60,9 +61,12 @@ export default function Register({ onSuccess }: RegisterProps) {
                 user: response.data.register.user as User
             }))
 
+            dispatch(showAlert({ message: 'Registration successful!', type: 'success', duration: 3000 }));
+
             onSuccess();
 
         } catch (e) {
+            dispatch(showAlert({ message: 'Registration failed!', type: 'error', duration: 5000 }));
             console.error(e);
         }
     }

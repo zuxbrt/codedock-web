@@ -36,10 +36,6 @@ export default function AppHeader() {
         dispatch(logout());
     }
 
-    useEffect(() => {
-        console.log(user);
-    }, [user])
-
     return (
         <>
             <header className="border border-white rounded-md py-2 px-1 m-4">

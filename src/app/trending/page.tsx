@@ -1,6 +1,6 @@
 
 export default function Trending() {
     return <>
-        Trending
+        <p className="text-center text-2xl">Trending</p>
     </>
 }

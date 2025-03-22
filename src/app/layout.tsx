@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { store, persistor } from "../redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import AppHeader from "./ui/header/AppHeader";
+import Alert from "./ui/alert/alert";
 
 const client = new ApolloClient({
   link: createHttpLink({
@@ -26,10 +27,11 @@ export default function RootLayout({
     <Provider store={store}>
       <PersistGate loading={<html><body></body></html>} persistor={persistor}>
         <ApolloProvider client={client}>
-            <AppHeader/>
-              <body className={`antialiased`}>
-                <div className="container p-4">{children}</div>
-              </body>
+          <AppHeader />
+          <body className={`antialiased`}>
+            <div className="p-4">{children}</div>
+          </body>
+          <Alert />
         </ApolloProvider>
       </PersistGate>
     </Provider>
