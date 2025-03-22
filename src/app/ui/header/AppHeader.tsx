@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "../modal/modal";
 import { logout } from "@/redux/authSlice";
+import Register from "@/app/components/register/register";
 
 export default function AppHeader() {
 
@@ -19,6 +20,16 @@ export default function AppHeader() {
     const openModal = ( content: React.ReactNode) => {
         setModalContent(content);
         setIsModalVisible(true);
+    }
+
+    const showLogin = () => {
+        openModal(<Login openRegistration={showRegister} onSuccess={() => setIsModalVisible(false)}/>)
+    }
+
+    const showRegister = () => {
+        openModal(
+            <Register onSuccess={() => setIsModalVisible(false)}/>
+        )
     }
 
     const logoutUser = () => {
@@ -49,10 +60,14 @@ export default function AppHeader() {
                     }
                     )}>explore</Link>
 
-                    { user ? <div onClick={() => logoutUser()} className="ml-auto mr-0 px-4 py-1 cursor-pointer">Logout</div>
+                    { user ? 
+                        <>
+                            <span className="ml-auto mr-0 px-4 py-1 border-1 border-solid bg-teal-700">Hi, {user.username}</span>
+                            <div onClick={() => logoutUser()} className="ml-2 mr-0 px-4 py-1 cursor-pointer">Logout</div>
+                        </>
                         : 
                         <>
-                            <div onClick={() => openModal(<Login />)} className="ml-auto mr-0 px-4 py-1 cursor-pointer">Login</div>
+                            <div onClick={() => showLogin()} className="ml-auto mr-0 px-4 py-1 cursor-pointer">Login</div>
                         </>
                     }
 

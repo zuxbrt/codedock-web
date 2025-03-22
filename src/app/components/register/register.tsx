@@ -1,22 +1,22 @@
 import { setAuth } from "@/redux/authSlice";
 import { User } from "@/types/global";
 import { gql, useMutation } from "@apollo/client";
-import React, { useState } from "react"
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 
-interface LoginFormState {
+interface RegisterFormState {
     email: string;
     password: string;
+    username: string;
 }
 
-interface LoginProps {
-    openRegistration: () => void
+interface RegisterProps {
     onSuccess: () => void
 }
 
-const LOGIN_MUTATION = gql`
-    mutation Login($email: String!, $password: String!){
-        login(email: $email, password: $password){
+const REGISTER_MUTATION = gql`
+    mutation Register($username: String!, $email: String!, $password: String!) {
+        register(username: $username, email: $email, password: $password) {
             token
             user{
                 id
@@ -27,16 +27,17 @@ const LOGIN_MUTATION = gql`
     }
 `
 
-export default function Login({ openRegistration, onSuccess }: LoginProps) {
+export default function Register({ onSuccess }: RegisterProps) {
 
-    const [formData, setFormData] = useState<LoginFormState>({
+    const [formData, setFormData] = useState<RegisterFormState>({
         email: '',
-        password: ''
+        password: '',
+        username: ''
     })
 
     const dispatch = useDispatch();
 
-    const [loginUser, { data, loading, error }] = useMutation(LOGIN_MUTATION);
+    const [registerUser, { data, loading, error }] = useMutation(REGISTER_MUTATION);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -46,16 +47,17 @@ export default function Login({ openRegistration, onSuccess }: LoginProps) {
         }))
     }
 
-    const handleLogin = async (event: React.SyntheticEvent<HTMLFormElement>) => {
+    const handleRegistration = async (event: React.SyntheticEvent<HTMLFormElement>) => {
         event.preventDefault();
         const email = formData.email;
         const password = formData.password;
+        const username = formData.username;
         try {
-            const response = await loginUser({ variables: { email, password }});
+            const response = await registerUser({ variables: { username, email, password }});
             
             dispatch(setAuth({
-                token: response.data.login.token,
-                user: response.data.login.user as User
+                token: response.data.register.token,
+                user: response.data.register.user as User
             }))
 
             onSuccess();
@@ -67,8 +69,17 @@ export default function Login({ openRegistration, onSuccess }: LoginProps) {
 
     return <>
         <div className="border-white">
-            <form className="w-64 flex flex-col ml-auto mr-auto" onSubmit={handleLogin}>
-                <p className="mb-4 text-center text-xl">Login</p>
+            <form className="w-64 flex flex-col ml-auto mr-auto" onSubmit={handleRegistration}>
+                <p className="mb-4 text-center text-xl">Register</p>
+
+                <input 
+                    className="border border-white rounded-sm px-2 mb-2 field-sizing-content" 
+                    id="username" 
+                    type="username" 
+                    name="username" 
+                    onChange={handleChange}
+                    autoComplete="username" 
+                    placeholder="username"></input>
 
                 <input 
                     className="border border-white rounded-sm px-2 mb-2 field-sizing-content" 
@@ -91,13 +102,8 @@ export default function Login({ openRegistration, onSuccess }: LoginProps) {
                 <button 
                     className="rounded-sm bg-teal-700 w-32 mt-2 text-center ml-auto mr-auto cursor-pointer" 
                     type="submit">
-                        login
+                        register
                 </button>
-
-                <div className="flex flex-row mt-5 justify-center">
-                    <p>No account?</p>&nbsp;
-                    <span className="underline underline-offset-2 cursor-pointer" onClick={() => openRegistration()}>Register</span>
-                </div>
 
             </form>
         </div>
